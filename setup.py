@@ -27,11 +27,10 @@ setup(
 
     ext_modules=[
         Extension('_pypropagate',
-                  sources = ['source/finite_difference.cpp','source/python.cpp'],
-                  include_dirs=['libs/lars/include','libs/lars/modules/NDArray/include',numpy.get_include()],
-                  libraries=['boost_python'],
+                  sources = ['source/python.cpp'],
+                  include_dirs=['/usr/include/eigen3/'],
                   library_dirs=['/'],
-                  extra_compile_args=['-g','-std=c++11','-Wno-unknown-pragmas','-Wno-unused-local-typedef','-ffast-math','-O3']
+                  extra_compile_args=['-g', '-std=c++14', '-Wall', '-Wpedantic', '-ffast-math', '-O3']
                   ),
         ],
 
