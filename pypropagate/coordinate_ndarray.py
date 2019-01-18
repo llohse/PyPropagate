@@ -38,7 +38,7 @@ class CoordinateNDArray(object):
         self.bounds = [(self.evaluate(b[0]),self.evaluate(b[1])) for b in bounds] if bounds != None else [(0,1)]*n
         self.axis = [a for a in axis] if axis != None else range(n)
         if not len(self.data.shape) == len(self.bounds) == len(self.axis):
-            raise ValueError("dimensions do not match")
+            raise ValueError("dimensions do not match:", len(self.data.shape), len(self.bounds), len(self.axis))
         self._dbounds = [self.evaluate((b[1] - b[0]) / float(n - 1)) for b, n in zip(self.bounds, self.data.shape)]
 
     def _get_index(self, value, axis):
