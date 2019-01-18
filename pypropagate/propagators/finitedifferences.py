@@ -3,6 +3,7 @@ from .propagator import Propagator
 import expresso.pycas as pc
 import numpy as np
 
+
 class FiniteDifferences2D(Propagator):
 
     ndim = 1
@@ -48,7 +49,8 @@ class FiniteDifferences2D(Propagator):
     
     def _set_field(self,field):
         self._solver.set_field(field)
-    
+
+
 class FiniteDifferences3D(Propagator):
 
     ndim = 2
@@ -123,7 +125,7 @@ class FiniteDifferences3D(Propagator):
     def _update(self,half_step):
         self._solver.update()
         self._update_boundary(half_step)
-        if (not self._F_is_constant_in_z):
+        if not self._F_is_constant_in_z:
             self._solver.set_ra (self.__ra[half_step](*self._get_indices()))
             if not self.__C_is_zero:
                 self._solver.set_rc (self.__rc[half_step](*self._get_indices()))
@@ -175,21 +177,22 @@ class FiniteDifferencesCS(Propagator):
 
         self._reset()
 
-    def _reshape(self,f):
+    @staticmethod
+    def _reshape(f):
         nx = f.shape[0]
         return f.reshape(nx, 1)
 
     def _reset(self):
-        self._solver.set_ra (self._reshape(self.__ra(*self._get_transposed_indices())))
-        self._solver.set_rb (self._reshape(self.__rb(*self._get_transposed_indices())))
-        self._solver.set_rc (self._reshape(self.__rc(*self._get_transposed_indices())))
-        self._solver.set_rz (self._reshape(self.__rz(*self._get_transposed_indices())))
+        self._solver.set_ra (self._reshape(self.__ra(*self._get_indices())))
+        self._solver.set_rb (self._reshape(self.__rb(*self._get_indices())))
+        self._solver.set_rc (self._reshape(self.__rc(*self._get_indices())))
+        self._solver.set_rz (self._reshape(self.__rz(*self._get_indices())))
         self._solver.update()
         super(FiniteDifferencesCS, self)._reset()
-        self._solver.set_ra (self._reshape(self.__ra(*self._get_transposed_indices())))
-        self._solver.set_rb (self._reshape(self.__rb(*self._get_transposed_indices())))
-        self._solver.set_rc (self._reshape(self.__rc(*self._get_transposed_indices())))
-        self._solver.set_rz (self._reshape(self.__rz(*self._get_transposed_indices())))
+        self._solver.set_ra (self._reshape(self.__ra(*self._get_indices())))
+        self._solver.set_rb (self._reshape(self.__rb(*self._get_indices())))
+        self._solver.set_rc (self._reshape(self.__rc(*self._get_indices())))
+        self._solver.set_rz (self._reshape(self.__rz(*self._get_indices())))
 
     def _update(self):
         self._solver.update()
@@ -197,9 +200,9 @@ class FiniteDifferencesCS(Propagator):
 
         self._get_field()[self.get_boundary_indices()] = self.__u_boundary(self.get_boundary_indices(),self.__z_values)
         if not self._F_is_constant_in_z:
-            self._solver.set_ra (self._reshape(self.__ra(*self._get_transposed_indices())))
-            self._solver.set_rb (self._reshape(self.__rb(*self._get_transposed_indices())))
-            self._solver.set_rc (self._reshape(self.__rc(*self._get_transposed_indices())))
+            self._solver.set_ra (self._reshape(self.__ra(*self._get_indices())))
+            self._solver.set_rb (self._reshape(self.__rb(*self._get_indices())))
+            self._solver.set_rc (self._reshape(self.__rc(*self._get_indices())))
 
     def _step(self):
         self._update()
@@ -213,6 +216,7 @@ class FiniteDifferencesCS(Propagator):
 
     def _set_field(self, field):
         self._solver.set_field(self._reshape(field))
+
 
 class FiniteDifferences3DCS(Propagator):
 
@@ -252,16 +256,16 @@ class FiniteDifferences3DCS(Propagator):
         self._reset()
         
     def _reset(self):
-        self._solver.ra = self.__ra(*self._get_transposed_indices()).transpose()
-        self._solver.rb = self.__rb(*self._get_transposed_indices()).transpose()
-        self._solver.rc = self.__rc(*self._get_transposed_indices()).transpose()
-        self._solver.rz = self.__rz(*self._get_transposed_indices()).transpose()
+        self._solver.set_ra (self.__ra(*self._get_indices()))
+        self._solver.set_rb (self.__rb(*self._get_indices()))
+        self._solver.set_rc (self.__rc(*self._get_indices()))
+        self._solver.set_rz (self.__rz(*self._get_indices()))
         self._solver.get_field().fill(0)
         self._solver.update()
-        self._solver.ra = self.__ra(*self._get_transposed_indices()).transpose()
-        self._solver.rb = self.__rb(*self._get_transposed_indices()).transpose()
-        self._solver.rc = self.__rc(*self._get_transposed_indices()).transpose()
-        self._solver.rz = self.__rz(*self._get_transposed_indices()).transpose()
+        self._solver.set_ra (self.__ra(*self._get_indices()))
+        self._solver.set_rb (self.__rb(*self._get_indices()))
+        self._solver.set_rc (self.__rc(*self._get_indices()))
+        self._solver.set_rz (self.__rz(*self._get_indices()))
         self._solver.get_field().fill(0)
         super(FiniteDifferences3DCS, self)._reset()
 
@@ -278,10 +282,10 @@ class FiniteDifferences3DCS(Propagator):
     def _update(self):
         self._solver.update()
         self._update_boundary()
-        if (not self._F_is_constant_in_z):
-            self._solver.ra = self.__ra(*self._get_transposed_indices()).transpose()
-            self._solver.rb = self.__rb(*self._get_transposed_indices()).transpose()
-            self._solver.rc = self.__rc(*self._get_transposed_indices()).transpose()
+        if not self._F_is_constant_in_z:
+            self._solver.set_ra (self.__ra(*self._get_indices()))
+            self._solver.set_rb (self.__rb(*self._get_indices()))
+            self._solver.set_rc (self.__rc(*self._get_indices()))
 
     def _step(self):
         self._update()
